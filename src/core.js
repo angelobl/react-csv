@@ -28,7 +28,7 @@ export const jsons2arrays = (jsons, headers) => {
   }
 
   const data = jsons.map((object) => headerKeys.map((header) => getHeaderValue(header, object)));
-  return [headerLabels, ...data];
+  return [...data];
 };
 
 export const getHeaderValue = (property, obj) => {

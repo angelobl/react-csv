@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const ReactCSV = require('../lib/index');
 
 window.ReactCSV = {CSVLink : ReactCSV.CSVLink, CSVDownload: ReactCSV.CSVDownload};
@@ -10,15 +10,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _core = require('../core');
-
-var _metaProps = require('../metaProps');
+var _index = require('../index');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28,10 +28,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var defaultProps = {
-  target: '_blank'
-};
-
 var CSVDownload = function (_React$Component) {
   _inherits(CSVDownload, _React$Component);
 
@@ -40,49 +36,32 @@ var CSVDownload = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (CSVDownload.__proto__ || Object.getPrototypeOf(CSVDownload)).call(this, props));
 
-    _this.state = {};
+    _this.state = { hasTriggered: false };
+    _this.handleRef = _this.handleRef.bind(_this);
     return _this;
   }
 
   _createClass(CSVDownload, [{
-    key: 'buildURI',
-    value: function buildURI() {
-      return _core.buildURI.apply(undefined, arguments);
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var _props = this.props,
-          data = _props.data,
-          headers = _props.headers,
-          separator = _props.separator,
-          enclosingCharacter = _props.enclosingCharacter,
-          uFEFF = _props.uFEFF,
-          target = _props.target,
-          specs = _props.specs,
-          replace = _props.replace;
-
-      this.state.page = window.open(this.buildURI(data, uFEFF, headers, separator, enclosingCharacter), target, specs, replace);
-    }
-  }, {
-    key: 'getWindow',
-    value: function getWindow() {
-      return this.state.page;
+    key: 'handleRef',
+    value: function handleRef(ref) {
+      if (ref) {
+        ref.link.click();
+        this.setState({ hasTriggered: true });
+      }
     }
   }, {
     key: 'render',
     value: function render() {
-      return null;
+      if (this.state.hasTriggered) return null;
+      return _react2.default.createElement(_index.CSVLink, _extends({ ref: this.handleRef }, this.props));
     }
   }]);
 
   return CSVDownload;
 }(_react2.default.Component);
 
-CSVDownload.defaultProps = Object.assign(_metaProps.defaultProps, defaultProps);
-CSVDownload.propTypes = _metaProps.propTypes;
 exports.default = CSVDownload;
-},{"../core":4,"../metaProps":6,"react":44}],3:[function(require,module,exports){
+},{"../index":5,"react":44}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -119,8 +98,7 @@ var CSVLink = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (CSVLink.__proto__ || Object.getPrototypeOf(CSVLink)).call(this, props));
 
-    _this.buildURI = _this.buildURI.bind(_this);
-    _this.state = { href: '' };
+    _this.state = {};
     return _this;
   }
 
@@ -144,9 +122,10 @@ var CSVLink = function (_React$Component) {
             data = _props2.data,
             headers = _props2.headers,
             separator = _props2.separator,
-            uFEFF = _props2.uFEFF;
+            uFEFF = _props2.uFEFF,
+            enclosingCharacter = _props2.enclosingCharacter;
 
-        this.setState({ href: this.buildURI(data, uFEFF, headers, separator) });
+        this.setState({ href: this.buildURI(data, uFEFF, headers, separator, enclosingCharacter) });
       }
     }
   }, {
@@ -414,14 +393,16 @@ var propTypes = exports.propTypes = {
   filename: _propTypes.string,
   uFEFF: _propTypes.bool,
   onClick: _propTypes.func,
-  asyncOnClick: _propTypes.bool
+  asyncOnClick: _propTypes.bool,
+  enclosingCharacter: _propTypes.string
 };
 
 var defaultProps = exports.defaultProps = {
   separator: ',',
   filename: 'generatedBy_react-csv.csv',
   uFEFF: true,
-  asyncOnClick: false
+  asyncOnClick: false,
+  enclosingCharacter: '"'
 };
 
 var PropsNotForwarded = exports.PropsNotForwarded = ['data', 'headers'];

@@ -286,7 +286,7 @@ var jsons2arrays = exports.jsons2arrays = function jsons2arrays(jsons, headers) 
       return getHeaderValue(header, object);
     });
   });
-  return [headerLabels].concat(_toConsumableArray(data));
+  return [].concat(_toConsumableArray(data));
 };
 
 var getHeaderValue = exports.getHeaderValue = function getHeaderValue(property, obj) {
